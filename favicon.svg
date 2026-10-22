@@ -7,8 +7,7 @@
       <stop offset="1" stop-color="#F5B82E"/>
     </linearGradient>
   </defs>
-  <path d="M10 54V13.5C10 10.5 12.5 8 15.5 8H34c12.8 0 20.5 6.8 20.5 18.1 0 7.8-4 13.4-11.2 16.2L55 53H39.7L29.4 44H23v10H10Z" fill="url(#r)"/>
-  <path d="M23 20v13h10.5c5.1 0 8-2.3 8-6.6S38.6 20 33.5 20H23Z" fill="#101827"/>
+  <path fill="url(#r)" fill-rule="evenodd" d="M10 54V13.5C10 10.5 12.5 8 15.5 8H34c12.8 0 20.5 6.8 20.5 18.1 0 7.8-4 13.4-11.2 16.2L55 53H39.7L29.4 44H23v10H10Z M23 20v13h10.5c5.1 0 8-2.3 8-6.6S38.6 20 33.5 20H23Z"/>
   <path d="M39.5 44 48 53h7l-11.3-10.7" fill="#38BDF8"/>
   <path d="M47 5.5v5M44.5 8h5" stroke="#F5B82E" stroke-width="2.4" stroke-linecap="round"/>
   <circle cx="7" cy="47" r="2.2" fill="#F5B82E"/>
