@@ -1,6 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <title>RuangKepo R</title>
-  <path d="M13 56V8h22c13 0 21 7 21 19 0 9-5 15-13 18l13 11H40L29 46h-5v10H13Zm11-21h10c6 0 10-3 10-8s-4-8-10-8H24v16Z" fill="#ffffff"/>
-  <path d="M43 7l-2 5M52 13l-4 4" stroke="#F5B82E" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="17" cy="61" r="2" fill="#38BDF8"/>
+  <title>RuangKepo</title>
+  <defs>
+    <linearGradient id="r" x1="10" y1="8" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38BDF8"/>
+      <stop offset=".52" stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#F5B82E"/>
+    </linearGradient>
+  </defs>
+  <path d="M10 54V13.5C10 10.5 12.5 8 15.5 8H34c12.8 0 20.5 6.8 20.5 18.1 0 7.8-4 13.4-11.2 16.2L55 53H39.7L29.4 44H23v10H10Z" fill="url(#r)"/>
+  <path d="M23 20v13h10.5c5.1 0 8-2.3 8-6.6S38.6 20 33.5 20H23Z" fill="#101827"/>
+  <path d="M39.5 44 48 53h7l-11.3-10.7" fill="#38BDF8"/>
+  <path d="M47 5.5v5M44.5 8h5" stroke="#F5B82E" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="7" cy="47" r="2.2" fill="#F5B82E"/>
 </svg>
