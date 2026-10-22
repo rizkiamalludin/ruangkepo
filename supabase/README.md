@@ -1,25 +1,29 @@
-# RuangKepo Supabase foundation
+# RuangKepo Supabase backend
 
-This directory contains the initial SQL schema and RPC layer for the Supabase-backed prototype.
+This directory contains the SQL schema and RPC functions for the current static-site MVP.
 
-## Apply it
+## Current setup
 
-1. Create a Supabase project in your own dashboard.
-2. Open **SQL Editor** in that project.
-3. Open `schema.sql` from this directory, copy the complete contents, paste into SQL Editor, and run it.
-4. If the SQL Editor reports an error, stop and inspect the first error before running modified SQL.
-5. Keep the project URL and publishable key for later frontend integration. Never put a Supabase secret/service-role key in browser code or GitHub.
+- Supabase project: `ruangkepo` (project ref `odcqbkfgdqjtywyxaatc`), region Singapore.
+- `schema.sql` has been applied to the project.
+- The static frontend calls the Supabase REST RPC endpoint using the publishable key. Never place a secret/service-role key in browser code or GitHub.
+- Kotak Rahasia supports creating a box, sending anonymous messages from a shared link, and reading messages with the owner's token.
+- Ujian Bestie supports creating a quiz, sharing a public participant link, submitting answers, and reading results with the owner's token.
+- Radar Kecocokan and Cek Identitas remain client-side entertainment features.
 
-## RPC functions created
+## RPC functions
 
 - `create_secret_box()` returns a box UUID and a one-time owner token.
 - `send_secret_message(p_box_id, p_body, p_sender_name)` stores a message for a box.
-- `read_secret_messages(p_box_id, p_owner_token)` checks the owner token before returning messages.
+- `read_secret_messages(p_box_id, p_owner_token)` validates the owner token before returning messages.
 - `create_bestie_quiz(p_title, p_questions)` creates a quiz and returns its owner token.
 - `get_bestie_quiz(p_quiz_id)` returns public questions without correct answers.
 - `submit_bestie_quiz(p_quiz_id, p_participant_name, p_answers)` scores answers in the database.
-- `read_bestie_results(p_quiz_id, p_owner_token)` checks the owner token before returning submissions.
+- `read_bestie_results(p_quiz_id, p_owner_token)` validates the owner token before returning submissions.
 
-## Important status
+## Before a broad public launch
 
-This file only creates database objects. It does not create a Supabase project, execute itself in Supabase, deploy the frontend, or connect `index.html` to these RPC functions. Those steps must happen separately. Before public launch, add rate limiting / abuse controls and test all authorization paths. Owner tokens are credentials: save them securely and do not share them.
+- Add server-side rate limiting and anti-spam protections, especially for anonymous message submission and quiz creation.
+- Test abuse controls, owner-token handling, error states, and the complete browser flow on desktop and mobile.
+- Owner tokens are credentials. They are stored in the browser's local storage by this MVP; clearing browser data can lose access to the owner's inbox/results. Do not share owner tokens.
+- This is a lightweight MVP, not a fully moderated or abuse-resistant public service.
