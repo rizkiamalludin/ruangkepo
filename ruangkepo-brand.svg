@@ -1,1 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 150" role="img" aria-labelledby="title"><title id="title">RuangKepo</title><rect x="6" y="10" width="126" height="126" rx="28" fill="#111827"/><path d="M29 94V34h39c21 0 35 12 35 31 0 14-8 24-21 29l20 26H76L58 96H49v20H29Z" fill="#fff"/><path d="M50 50h17c8 0 13 5 13 13s-5 13-13 13H50Z" fill="#111827"/><path d="M88 23l4-10M104 31l9-9M111 47l10-3" stroke="#F5B82E" stroke-width="7" stroke-linecap="round"/><circle cx="38" cy="105" r="7" fill="#F5B82E"/><circle cx="58" cy="105" r="7" fill="#38BDF8"/><circle cx="78" cy="105" r="7" fill="#A3E635"/><text x="148" y="82" font-family="Arial,Helvetica,sans-serif" font-size="56" font-weight="800" letter-spacing="-2" fill="#111827">Ruang<tspan fill="#1687C9">K</tspan><tspan fill="#1687C9">e</tspan><tspan fill="#1687C9">po</tspan></text><text x="151" y="111" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="700" letter-spacing="1.4" fill="#475569">SOCIAL ENTERTAINMENT &amp; FUN WEB APP</text><path d="M150 123h36M520 123h28" stroke="#1687C9" stroke-width="4" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>RuangKepo</title>
+  <defs>
+    <linearGradient id="r" x1="10" y1="8" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38BDF8"/>
+      <stop offset=".52" stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#F5B82E"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#r)" fill-rule="evenodd" d="M10 54V13.5C10 10.5 12.5 8 15.5 8H34c12.8 0 20.5 6.8 20.5 18.1 0 7.8-4 13.4-11.2 16.2L55 53H39.7L29.4 44H23v10H10Z M23 20v13h10.5c5.1 0 8-2.3 8-6.6S38.6 20 33.5 20H23Z"/>
+  <path d="M39.5 44 48 53h7l-11.3-10.7" fill="#38BDF8"/>
+  <path d="M47 5.5v5M44.5 8h5" stroke="#F5B82E" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="7" cy="47" r="2.2" fill="#F5B82E"/>
+</svg>
