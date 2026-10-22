@@ -177,9 +177,9 @@ begin
     if jsonb_typeof(v_q) <> 'object'
        or coalesce(char_length(trim(v_q->>'prompt')), 0) < 1
        or char_length(v_q->>'prompt') > 300
-       or jsonb_typeof(v_q->'options') <> 'array'
-       or jsonb_array_length(v_q->'options') < 2
-       or jsonb_array_length(v_q->'options') > 4
+       or coalesce(jsonb_typeof(v_q->'options'), '') <> 'array'
+       or coalesce(jsonb_array_length(v_q->'options'), 0) < 2
+       or coalesce(jsonb_array_length(v_q->'options'), 0) > 4
        or coalesce(v_q->>'correct_index', '') !~ '^[0-3]$' then
       raise exception 'Format pertanyaan tidak valid' using errcode = '22023';
     end if;
