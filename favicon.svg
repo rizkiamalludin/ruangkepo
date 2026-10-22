@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#111827"/><path d="M15 49V14h21c12 0 19 7 19 18 0 8-5 14-12 16l11 14H39L29 48h-3v14H15Z" fill="#fff" transform="translate(0 -7)"/><path d="M27 22h9c5 0 8 3 8 8s-3 8-8 8h-9Z" fill="#111827"/><path d="M44 10l-2 5M52 16l-4 4" stroke="#F5B82E" stroke-width="3.5" stroke-linecap="round"/><circle cx="20" cy="51" r="3.5" fill="#F5B82E"/><circle cx="31" cy="51" r="3.5" fill="#38BDF8"/><circle cx="42" cy="51" r="3.5" fill="#A3E635"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>RuangKepo R</title>
+  <path d="M13 56V8h22c13 0 21 7 21 19 0 9-5 15-13 18l13 11H40L29 46h-5v10H13Zm11-21h10c6 0 10-3 10-8s-4-8-10-8H24v16Z" fill="#ffffff"/>
+  <path d="M43 7l-2 5M52 13l-4 4" stroke="#F5B82E" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="17" cy="61" r="2" fill="#38BDF8"/>
+</svg>
