@@ -129,9 +129,23 @@ function openBugReport(){
  modal.classList.add('open');document.body.style.overflow='hidden';
 }
 function initTheme(){
- let theme='light';try{theme=localStorage.getItem('rk_theme')||'light'}catch(e){}
- const apply=()=>{document.documentElement.dataset.theme=theme;const btn=document.getElementById('themeToggle');if(btn){btn.textContent=theme==='dark'?'☀️ Terang':'🌙 Gelap';btn.setAttribute('aria-pressed',String(theme==='dark'));btn.setAttribute('aria-label',theme==='dark'?'Aktifkan mode siang':'Aktifkan mode malam')}const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==='dark'?'#17131f':'#fbf7ff'};
- apply();document.getElementById('themeToggle').addEventListener('click',()=>{theme=theme==='dark'?'light':'dark';try{localStorage.setItem('rk_theme',theme)}catch(e){}apply()});
+ const root=document.documentElement;
+ let theme='light';
+ try{theme=localStorage.getItem('rk_theme')||'light'}catch(e){}
+ const apply=()=>{
+  root.setAttribute('data-theme',theme);
+  const btn=document.getElementById('themeToggle');
+  if(btn){btn.textContent=theme==='dark'?'☀️ Terang':'🌙 Gelap';btn.setAttribute('aria-pressed',String(theme==='dark'));btn.setAttribute('aria-label',theme==='dark'?'Aktifkan mode siang':'Aktifkan mode malam');btn.title=theme==='dark'?'Ganti ke tema terang':'Ganti ke tema gelap'}
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta)meta.content=theme==='dark'?'#17131f':'#fbf7ff';
+ };
+ apply();
+ const btn=document.getElementById('themeToggle');
+ if(btn)btn.addEventListener('click',()=>{
+  theme=theme==='dark'?'light':'dark';
+  apply();
+  try{localStorage.setItem('rk_theme',theme)}catch(e){}
+ });
 }
 
 initTheme();document.getElementById('reportBugBtn').addEventListener('click',openBugReport);
