@@ -485,8 +485,8 @@ begin
     raise exception 'Tulisan harus berisi 1 sampai 500 karakter' using errcode = '22023';
   end if;
 
-  v_sender := pg_catalog.coalesce(
-    nullif(pg_catalog.left(pg_catalog.btrim(pg_catalog.coalesce(p_sender_name, '')), 40), ''),
+  v_sender := coalesce(
+    nullif(pg_catalog.left(pg_catalog.btrim(coalesce(p_sender_name, '')), 40), ''),
     'Anonim'
   );
 
@@ -537,7 +537,7 @@ begin
     raise exception 'Token pemilik tidak valid' using errcode = '42501';
   end if;
 
-  select pg_catalog.coalesce(
+  select coalesce(
     pg_catalog.jsonb_agg(
       pg_catalog.jsonb_build_object(
         'id', p.id,
