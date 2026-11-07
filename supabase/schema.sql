@@ -365,3 +365,214 @@ comment on table public.secret_boxes is 'RuangKepo private message box metadata;
 comment on table public.secret_messages is 'Private messages; no direct browser table access, use validated RPC functions.';
 comment on table public.bestie_quizzes is 'Bestie quiz definitions including answer keys; no direct browser table access.';
 comment on table public.bestie_submissions is 'Quiz submissions and scores; owner results require owner token validation.';
+
+
+-- Voice Box feature (kept in sync with the live Supabase project).
+create table if not exists public.voice_boxes (
+  id uuid primary key default gen_random_uuid(),
+  owner_token_hash text not null,
+  title text not null default 'Kotak Suara',
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.voice_papers (
+  id uuid primary key default gen_random_uuid(),
+  box_id uuid not null references public.voice_boxes(id) on delete cascade,
+  body text not null check (char_length(trim(body)) between 1 and 500),
+  sender_name text not null default 'Anonim'
+    check (char_length(sender_name) between 1 and 40),
+  drawn_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists voice_papers_box_id_created_at_idx
+  on public.voice_papers (box_id, created_at);
+
+alter table public.voice_boxes enable row level security;
+alter table public.voice_papers enable row level security;
+
+-- Browser access to these tables is intentionally RPC-only.
+revoke all on table public.voice_boxes from anon, authenticated;
+revoke all on table public.voice_papers from anon, authenticated;
+
+create or replace function public.create_voice_box(
+  p_title text default 'Kotak Suara'
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, extensions, pg_temp
+as $$
+declare
+  v_id uuid;
+  v_token text;
+  v_title text;
+begin
+  v_token := replace(gen_random_uuid()::text || gen_random_uuid()::text, '-', '');
+  v_title := coalesce(nullif(left(trim(coalesce(p_title, '')), 60), ''), 'Kotak Suara');
+
+  insert into public.voice_boxes (owner_token_hash, title)
+  values (
+    encode(extensions.digest(convert_to(v_token, 'UTF8'), 'sha256'), 'hex'),
+    v_title
+  )
+  returning id into v_id;
+
+  return jsonb_build_object('box_id', v_id, 'owner_token', v_token, 'title', v_title);
+end;
+$$;
+
+create or replace function public.submit_voice_paper(
+  p_box_id uuid,
+  p_body text,
+  p_sender_name text default null
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, extensions, pg_temp
+as $$
+declare
+  v_id uuid;
+  v_name text;
+begin
+  if p_body is null or char_length(trim(p_body)) < 1 or char_length(trim(p_body)) > 500 then
+    raise exception 'Tulisan harus berisi 1 sampai 500 karakter' using errcode = '22023';
+  end if;
+
+  if not exists (select 1 from public.voice_boxes where id = p_box_id) then
+    raise exception 'Kotak suara tidak ditemukan' using errcode = 'P0002';
+  end if;
+
+  v_name := coalesce(nullif(left(trim(coalesce(p_sender_name, '')), 40), ''), 'Anonim');
+
+  insert into public.voice_papers (box_id, body, sender_name)
+  values (p_box_id, trim(p_body), v_name)
+  returning id into v_id;
+
+  return jsonb_build_object('ok', true, 'paper_id', v_id);
+end;
+$$;
+
+create or replace function public.read_voice_papers(
+  p_box_id uuid,
+  p_owner_token text
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, extensions, pg_temp
+as $$
+declare
+  v_hash text;
+  v_papers jsonb;
+begin
+  select owner_token_hash into v_hash
+  from public.voice_boxes
+  where id = p_box_id;
+
+  if v_hash is null
+     or p_owner_token is null
+     or v_hash <> encode(extensions.digest(convert_to(p_owner_token, 'UTF8'), 'sha256'), 'hex') then
+    raise exception 'Token pemilik tidak valid' using errcode = '42501';
+  end if;
+
+  select coalesce(
+    jsonb_agg(
+      jsonb_build_object(
+        'id', p.id,
+        'body', p.body,
+        'sender_name', p.sender_name,
+        'created_at', p.created_at,
+        'drawn_at', p.drawn_at
+      ) order by p.created_at asc
+    ),
+    '[]'::jsonb
+  )
+  into v_papers
+  from public.voice_papers p
+  where p.box_id = p_box_id;
+
+  return jsonb_build_object(
+    'papers', v_papers,
+    'total', jsonb_array_length(coalesce(v_papers, '[]'::jsonb))
+  );
+end;
+$$;
+
+create or replace function public.draw_voice_paper(
+  p_box_id uuid,
+  p_owner_token text
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, extensions, pg_temp
+as $$
+declare
+  v_hash text;
+  v_paper public.voice_papers%rowtype;
+  v_remaining integer;
+begin
+  select owner_token_hash into v_hash
+  from public.voice_boxes
+  where id = p_box_id;
+
+  if v_hash is null
+     or p_owner_token is null
+     or v_hash <> encode(extensions.digest(convert_to(p_owner_token, 'UTF8'), 'sha256'), 'hex') then
+    raise exception 'Token pemilik tidak valid' using errcode = '42501';
+  end if;
+
+  select count(*) into v_remaining
+  from public.voice_papers
+  where box_id = p_box_id and drawn_at is null;
+
+  if v_remaining = 0 then
+    raise exception 'Semua kertas sudah terambil atau kotak masih kosong' using errcode = 'P0002';
+  end if;
+
+  select * into v_paper
+  from public.voice_papers
+  where box_id = p_box_id and drawn_at is null
+  order by random()
+  limit 1
+  for update skip locked;
+
+  if v_paper.id is null then
+    raise exception 'Tidak ada kertas yang bisa diambil' using errcode = 'P0002';
+  end if;
+
+  update public.voice_papers
+  set drawn_at = now()
+  where id = v_paper.id
+  returning * into v_paper;
+
+  return jsonb_build_object(
+    'paper',
+    jsonb_build_object(
+      'id', v_paper.id,
+      'body', v_paper.body,
+      'sender_name', v_paper.sender_name,
+      'created_at', v_paper.created_at,
+      'drawn_at', v_paper.drawn_at
+    ),
+    'remaining', v_remaining - 1
+  );
+end;
+$$;
+
+-- Public RPC execution is intentional because RuangKepo is passwordless.
+-- Read/draw functions verify the owner token before returning private content.
+revoke all on function public.create_voice_box(text) from public;
+revoke all on function public.submit_voice_paper(uuid, text, text) from public;
+revoke all on function public.read_voice_papers(uuid, text) from public;
+revoke all on function public.draw_voice_paper(uuid, text) from public;
+
+grant execute on function public.create_voice_box(text) to anon, authenticated;
+grant execute on function public.submit_voice_paper(uuid, text, text) to anon, authenticated;
+grant execute on function public.read_voice_papers(uuid, text) to anon, authenticated;
+grant execute on function public.draw_voice_paper(uuid, text) to anon, authenticated;
+
+comment on table public.voice_boxes is 'Kotak Suara metadata; owner token is stored as a SHA-256 hash.';
+comment on table public.voice_papers is 'Messages submitted to a Voice Box; direct browser table access is disabled.';
