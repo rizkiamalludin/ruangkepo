@@ -179,7 +179,7 @@ document.getElementById('closeModal').addEventListener('click',closeTool);
 modal.addEventListener('click',e=>{if(e.target===modal)closeTool()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTool()});
 
-document.getElementById('shareTop').addEventListener('click',async()=>{const url='https://ruangkepo.vercel.app/';const data={title:'RuangKepo',text:'Yuk seru-seruan bareng satu sirkel di RuangKepo 💜',url};try{if(navigator.share){await navigator.share(data);return}}catch(e){if(e.name==='AbortError')return}try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url);alert('Link RuangKepo berhasil disalin! Bagikan ke temanmu.')}else{window.prompt('Salin link RuangKepo ini:',url)}}catch(e){window.prompt('Salin link RuangKepo ini:',url)}});
+document.getElementById('shareTop').addEventListener('click',async()=>{const url='https://ruangkepo.my.id/';const data={title:'RuangKepo',text:'Yuk seru-seruan bareng satu sirkel di RuangKepo 💜',url};try{if(navigator.share){await navigator.share(data);return}}catch(e){if(e.name==='AbortError')return}try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url);alert('Link RuangKepo berhasil disalin! Bagikan ke temanmu.')}else{window.prompt('Salin link RuangKepo ini:',url)}}catch(e){window.prompt('Salin link RuangKepo ini:',url)}});
 </script>
 </body>
 </html>
