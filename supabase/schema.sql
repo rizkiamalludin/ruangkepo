@@ -513,6 +513,8 @@ declare
   v_hash text;
   v_paper public.voice_papers%rowtype;
   v_remaining integer;
+  v_total integer;
+  v_already_drawn boolean;
 begin
   select owner_token_hash into v_hash
   from public.voice_boxes
@@ -522,6 +524,15 @@ begin
      or p_owner_token is null
      or v_hash <> encode(extensions.digest(convert_to(p_owner_token, 'UTF8'), 'sha256'), 'hex') then
     raise exception 'Token pemilik tidak valid' using errcode = '42501';
+  end if;
+
+  select count(*), coalesce(bool_or(drawn_at is not null), false)
+  into v_total, v_already_drawn
+  from public.voice_papers
+  where box_id = p_box_id;
+
+  if v_total < 5 and not v_already_drawn then
+    raise exception 'Minimal 5 kertas diperlukan sebelum pengacakan dimulai' using errcode = '22023';
   end if;
 
   select count(*) into v_remaining
